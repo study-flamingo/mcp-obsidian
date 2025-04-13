@@ -1,0 +1,6 @@
+services:
+  mcpobsidian:
+    image: mcpobsidian
+    build:
+      context: .
+      dockerfile: ./Dockerfile
