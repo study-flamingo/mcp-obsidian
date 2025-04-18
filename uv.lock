@@ -180,31 +180,6 @@ wheels = [
 ]
 
 [[package]]
-name = "mcp-obsidian"
-version = "0.2.1"
-source = { editable = "." }
-dependencies = [
-    { name = "mcp" },
-    { name = "python-dotenv" },
-    { name = "requests" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pyright" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "mcp", specifier = ">=1.1.0" },
-    { name = "python-dotenv", specifier = ">=1.0.1" },
-    { name = "requests", specifier = ">=2.32.3" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pyright", specifier = ">=1.1.389" }]
-
-[[package]]
 name = "nodeenv"
 version = "1.9.1"
 source = { registry = "https://pypi.org/simple" }
