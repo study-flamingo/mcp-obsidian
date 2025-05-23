@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
 from typing import Any
+from datetime import datetime
 
 class Obsidian():
     def __init__(
@@ -61,14 +62,29 @@ class Obsidian():
 
         return self._safe_call(call_fn)
 
-    def get_file_contents(self, filepath: str) -> Any:
+    def get_file_contents(self, filepath: str) -> dict:
+        """
+        Get the contents of a file and the current date.
+
+        Args:
+            filepath: Path to the file in the vault.
+
+        Returns:
+            dict: {
+                "now": <current date as string>,
+                "content": <file contents as string>
+            }
+        """
         url = f"{self.get_base_url()}/vault/{filepath}"
-    
+
         def call_fn():
             response = requests.get(url, headers=self._get_headers(), verify=self.verify_ssl, timeout=self.timeout)
             response.raise_for_status()
             
-            return response.text
+            return {
+                "now": datetime.now().date().isoformat(),
+                "content": response.text
+            }
 
         return self._safe_call(call_fn)
     

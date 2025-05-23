@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.11"
 
 [[package]]
@@ -178,6 +179,31 @@ sdist = { url = "https://files.pythonhosted.org/packages/77/f2/067b1fc114e8d3ae4
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b9/3e/aef19ac08a6f9a347c086c4e628c2f7329659828cbe92ffd524ec2aac833/mcp-1.1.0-py3-none-any.whl", hash = "sha256:44aa4d2e541f0924d6c344aa7f96b427a6ee1df2fab70b5f9ae2f8777b3f05f2", size = 36576 },
 ]
+
+[[package]]
+name = "mcp-obsidian"
+version = "0.2.1"
+source = { editable = "." }
+dependencies = [
+    { name = "mcp" },
+    { name = "python-dotenv" },
+    { name = "requests" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pyright" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mcp", specifier = ">=1.1.0" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "requests", specifier = ">=2.32.3" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pyright", specifier = ">=1.1.389" }]
 
 [[package]]
 name = "nodeenv"
