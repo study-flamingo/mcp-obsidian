@@ -1,8 +1,6 @@
 from . import tools
-import json
 import logging
 from collections.abc import Sequence
-from functools import lru_cache
 from typing import Any
 import os
 from dotenv import load_dotenv
@@ -23,13 +21,13 @@ load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("mcp-obsidian")
+logger = logging.getLogger("obsidian_mcp")
 
 api_key = os.getenv("OBSIDIAN_API_KEY")
 if not api_key:
     raise ValueError(f"OBSIDIAN_API_KEY environment variable required. Working directory: {os.getcwd()}")
 
-app = Server("mcp-obsidian")
+app = Server("obsidian_mcp")
 
 tool_handlers = {}
 def add_tool_handler(tool_class: tools.ToolHandler):
@@ -85,12 +83,8 @@ async def main():
 
     # Import here to avoid issues with event loops
     from mcp.server.stdio import stdio_server
-    logger.info("Starting MCP Obsidian server...")
-    logger.info("Entering main() coroutine.")
     stop_event = asyncio.Event()
     async with stdio_server() as (read_stream, write_stream):
-        logger.info("Entering stdio_server context manager.")
-        
         # Run the MCP server loop in the background
         server_task = asyncio.create_task(
             app.run(
@@ -99,39 +93,37 @@ async def main():
                 app.create_initialization_options()
             )
         )
-        logger.info("MCP server task created and running in background.")
         
         # Keep the main function alive indefinitely until stop_event is set (e.g., by KeyboardInterrupt)
         # Or handle server_task completion/errors if needed
         try:
-            logger.info("Main loop waiting for stop event...")
             await stop_event.wait() # Wait until stop_event is set
         except asyncio.CancelledError:
-             logger.info("Main wait loop cancelled.")
+             logger.debug("Main wait loop cancelled.")
         except KeyboardInterrupt: # Catch Ctrl+C here
-             logger.info("KeyboardInterrupt caught in main loop, setting stop event.")
+             logger.debug("KeyboardInterrupt caught in main loop, setting stop event.")
              stop_event.set() # Signal the finally block to clean up
         finally:
-            logger.info("Cleaning up server task...")
+            logger.debug("Cleaning up server task...")
             if not server_task.done():
                 server_task.cancel()
                 try:
                     await server_task
                 except asyncio.CancelledError:
-                    logger.info("Server task successfully cancelled.")
+                    logger.debug("Server task successfully cancelled.")
                 except Exception as e:
                      logger.error(f"Error during server task cancellation: {e}")
             elif server_task.exception():
                 logger.error(f"Server task finished with exception: {server_task.exception()}")
             else:
-                 logger.info("Server task already completed.")
+                 logger.debug("Server task already completed.")
 
 # Make sure logger is defined or imported if used here
 if __name__ == "__main__":
-    logger.info("Entering main execution block (__name__ == '__main__').")
+    logger.debug("Entering main execution block (__name__ == '__main__').")
     try:
         asyncio.run(main()) # Runs the main() defined in server.py
     except Exception as e: # Removed KeyboardInterrupt handler here
         logger.exception(f"Script encountered an unexpected error: {e}")
         exit(1)
-    logger.info("Script finished.")
+    logger.debug("Script finished.")

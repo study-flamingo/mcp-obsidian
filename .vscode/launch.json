@@ -1,19 +1,28 @@
 {
   "configurations": [
     {
-      "name": "Docker: Python - General",
-      "type": "docker",
+      "name": "MCP Inspector",
+      "command": "npx @modelcontextprotocol/inspector python -m src.obsidian_mcp",
       "request": "launch",
-      "preLaunchTask": "docker-run: debug",
-      "python": {
-        "pathMappings": [
-          {
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/app"
-          }
-        ],
-        "projectType": "general"
-      }
+      "envFile": "${workspaceFolder}/.env",
+      "type": "node-terminal"
+    },
+    {
+      "name": "Run",
+      "type": "node-terminal",
+      "command": "python -m src.obsidian_mcp",
+      "request": "launch",
+      "envFile": "${workspaceFolder}/.env"
+
+    },
+    {
+      "name": "Set PYTHONPATH",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/src",
+      "command": "PYTHONPATH=$PWD python -m obsidian_mcp",
+      "request": "launch",
+      "envFile": "${workspaceFolder}/.env",
+
     }
   ]
 }
