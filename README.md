@@ -1,4 +1,4 @@
-8# MCP server for Obsidian
+# MCP server for Obsidian
 
 An MCP server to interact with Obsidian via the Local REST API community plugin.
 
@@ -72,7 +72,7 @@ To use the local installation with Claude Desktop, configure the server as follo
 ```json
 {
   "mcpServers": {
-    "mcp-obsidian": {
+    "obsidian-mcp": {
       "command": "uv",
       "args": [
         "run",
@@ -90,10 +90,10 @@ To use the local installation with Claude Desktop, configure the server as follo
 ```json
 {
   "mcpServers": {
-    "mcp-obsidian": {
+    "obsidian-mcp": {
       "command": "uvx",
       "args": [
-        "mcp-obsidian"
+        "obsidian-mcp"
       ],
       "env": {
         "OBSIDIAN_API_KEY": "<your_api_key_here>",
@@ -113,8 +113,8 @@ To get started, first clone the repository and install the dependencies:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/jlowin/mcp-obsidian.git
-cd mcp-obsidian
+git clone https://github.com/study-flamingo/obsidian-mcp.git
+cd obsidian-mcp
 ```
 
 2. Install dependencies using uv:
@@ -132,10 +132,10 @@ There are two ways to configure the environment with the Obsidian REST API Key.
 
 ```json
 {
-  "mcp-obsidian": {
+  "obsidian-mcp": {
     "command": "uvx",
     "args": [
-      "mcp-obsidian"
+      "obsidian-mcp"
     ],
     "env": {
       "OBSIDIAN_API_KEY": "<your_api_key_here>",
@@ -164,7 +164,7 @@ experience, we strongly recommend using the [MCP Inspector](https://github.com/m
 You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
 
 ```bash
-npx @modelcontextprotocol/inspector uv --directory /path/to/mcp-obsidian run mcp-obsidian
+npx @modelcontextprotocol/inspector uv --directory /path/to/obsidian-mcp run obsidian-mcp
 ```
 
 Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.
@@ -172,5 +172,5 @@ Upon launching, the Inspector will display a URL that you can access in your bro
 You can also watch the server logs with this command:
 
 ```bash
-tail -n 20 -f ~/Library/Logs/Claude/mcp-server-mcp-obsidian.log
+tail -n 20 -f ~/Library/Logs/Claude/mcp-server-obsidian-mcp.log
 ```
