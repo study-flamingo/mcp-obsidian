@@ -40,7 +40,7 @@ The use prompts like this:
 
 ### Running the server
 
-To run the server, use `uv run obsidian-mcp` or `uvx obsidian-mcp`.
+To run the server, use python -m obsidian_mcp when installed locally, otherwise uvx obsidian_mcp.
 
 ### Example prompts
 
@@ -107,7 +107,10 @@ To use the local installation with Claude Desktop, configure the server as follo
 
 #### Local Installation
 
-After cloning the repository and installing dependencies, you can run the server locally from the project directory using `uv run src/obsidian_mcp/__main__.py`. Alternatively, you can install the project in editable mode using `uv pip install -e .` from the project root, which will allow you to use `uv run obsidian-mcp`.
+After cloning the repository and installing dependencies, you can run the server locally from the project directory using `uv run src/obsidian_mcp/__main__.py`. Alternatively, you can install the project locally using `uv pip install -e .` from the project root, which will allow you to use `uv run obsidian-mcp`.
+
+**Requirements:** Python 3.12 or higher
+[uv package manager](https://docs.astral.sh/uv/getting-started/installation/)
 
 To get started, first clone the repository and install the dependencies:
 
@@ -117,9 +120,13 @@ git clone https://github.com/study-flamingo/obsidian-mcp.git
 cd obsidian-mcp
 ```
 
-2. Install dependencies using uv:
+2. Install dependencies and package using uv:
 ```bash
-uv sync
+uv pip install -e .
+
+*or*
+
+uv pip install --system -e .  # May need to install to system
 ```
 
 ## Configuration
@@ -145,14 +152,16 @@ There are two ways to configure the environment with the Obsidian REST API Key.
 }
 ```
 
-2. Create a `.env` file in the working directory with the following required variable:
+1. Create a `.env` file in either the working directory, or create a folder named `.obsidian-mcp` in your user directory and place it in there. Populate the .env with the following variables:
 
 ```
 OBSIDIAN_API_KEY=your_api_key_here
 OBSIDIAN_HOST=your_obsidian_host # Optional, defaults to 127.0.0.1
 ```
 
-Note: You can find the key in the Obsidian plugin config.
+You should end up with `.obsidian-mcp/.env` in your root user directory.
+
+Note: You can find the key in the Local REST API plugin config.
 
 ## Development
 
@@ -161,10 +170,10 @@ Note: You can find the key in the Obsidian plugin config.
 Since MCP servers run over stdio, debugging can be challenging. For the best debugging
 experience, we strongly recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector). You can also use `mcp dev` to launch the inspector.
 
-You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
+You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command in the project root:
 
 ```bash
-npx @modelcontextprotocol/inspector uv --directory /path/to/obsidian-mcp run obsidian-mcp
+npx @modelcontextprotocol/inspector python -m src.obsidian_mcp
 ```
 
 Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.

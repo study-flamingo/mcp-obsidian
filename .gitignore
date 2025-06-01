@@ -12,3 +12,4 @@ wheels/
 .devcontainer
 pyproject.old
 .llms
+.roo
