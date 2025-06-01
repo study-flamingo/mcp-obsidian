@@ -1,4 +1,4 @@
-# MCP server for Obsidian
+# Obsidian MCP
 
 An MCP server to interact with Obsidian via the Local REST API community plugin.
 
