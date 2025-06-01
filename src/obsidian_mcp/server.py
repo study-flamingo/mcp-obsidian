@@ -17,7 +17,7 @@ try:
     loaded_any = load_dotenv("../../.env") or load_dotenv(".env") or load_dotenv(home_dotenv_path)
 
     if not loaded_any:
-        logger.info(".env file not found, env variable must be passed by host process.")
+        logger.info(".env file not found! Place in project root or in ~/.obsidian-mcp or pass from host")
     else:
         logger.debug(".env file found!")
 
