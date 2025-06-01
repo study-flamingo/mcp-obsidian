@@ -1,24 +1,35 @@
-# MCP server for Obsidian
+8# MCP server for Obsidian
 
-MCP server to interact with Obsidian via the Local REST API community plugin.
-
-<a href="https://glama.ai/mcp/servers/3wko1bhuek"><img width="380" height="200" src="https://glama.ai/mcp/servers/3wko1bhuek/badge" alt="server for Obsidian MCP server" /></a>
+An MCP server to interact with Obsidian via the Local REST API community plugin.
 
 ## Components
 
-### Tools
+This server provides the following components:
+
+#### Tools
 
 The server implements multiple tools to interact with Obsidian:
 
-- list_files_in_vault: Lists all files and directories in the root directory of your Obsidian vault
-- list_files_in_dir: Lists all files and directories in a specific Obsidian directory
-- get_file_contents: Return the content of a single file in your vault.
-- search: Search for documents matching a specified text query across all files in the vault
-- patch_content: Insert content into an existing note relative to a heading, block reference, or frontmatter field.
-- append_content: Append content to a new or existing file in the vault.
-- delete_file: Delete a file or directory from your vault.
+- `list_files_in_vault`: Lists all files and directories in the root directory of your Obsidian vault.
+- `list_files_in_dir`: Lists all files and directories that exist in a specific Obsidian directory.
+- `get_file_contents`: Return the content of a single file in your vault.
+- `simple_search`: Simple search for documents matching a specified text query across all files in the vault. Use this tool when you want to do a simple text search
+- `append_content`: Append content to a new or existing file in the vault.
+- `patch_content`: Insert content into an existing note relative to a heading, block reference, or frontmatter field.
+- `delete_file`: Delete a file or directory from the vault.
+- `complex_search`: Complex search for documents using a JsonLogic query. Supports standard JsonLogic operators plus 'glob' and 'regexp' for pattern matching. Results must be non-falsy. Use this tool when you want to do a complex search, e.g. for all documents with certain tags etc.
+- `batch_get_file_contents`: Return the contents of multiple files in your vault, concatenated with headers.
+- `get_periodic_note`: Get current periodic note for the specified period.
+- `get_recent_periodic_notes`: Get most recent periodic notes for the specified period type.
+- `get_recent_changes`: Get recently modified files in the vault.
 
-### Example prompts
+#### Resources
+
+(No specific resources are defined in tools.py)
+
+#### Prompts
+
+(No specific prompts are defined in tools.py, keeping example prompts from original README)
 
 Its good to first instruct Claude to use Obsidian. Then it will always call the tool.
 
@@ -27,37 +38,15 @@ The use prompts like this:
 - Search for all files where Azure CosmosDb is mentioned and quickly explain to me the context in which it is mentioned
 - Summarize the last meeting notes and put them into a new note 'summary meeting.md'. Add an introduction so that I can send it via email.
 
-## Configuration
+### Running the server
 
-### Obsidian REST API Key
+To run the server, use `uv run obsidian-mcp` or `uvx obsidian-mcp`.
 
-There are two ways to configure the environment with the Obsidian REST API Key. 
+### Example prompts
 
-1. Add to server config (preferred)
-
-```json
-{
-  "mcp-obsidian": {
-    "command": "uvx",
-    "args": [
-      "mcp-obsidian"
-    ],
-    "env": {
-      "OBSIDIAN_API_KEY": "<your_api_key_here>",
-      "OBSIDIAN_HOST": "<your_obsidian_host>"
-    }
-  }
-}
-```
-
-2. Create a `.env` file in the working directory with the following required variable:
-
-```
-OBSIDIAN_API_KEY=your_api_key_here
-OBSIDIAN_HOST=your_obsidian_host
-```
-
-Note: You can find the key in the Obsidian plugin config.
+- Get the contents of the last architecture call note and summarize them
+- Search for all files where Azure CosmosDb is mentioned and quickly explain to me the context in which it is mentioned
+- Summarize the last meeting notes and put them into a new note 'summary meeting.md'. Add an introduction so that I can send it via email.
 
 ## Quickstart
 
@@ -78,16 +67,16 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 <details>
   <summary>Development/Unpublished Servers Configuration</summary>
   
+To use the local installation with Claude Desktop, configure the server as follows. For cloning and installation steps, please refer to the [Local Installation](#local-installation) section.
+
 ```json
 {
   "mcpServers": {
     "mcp-obsidian": {
       "command": "uv",
       "args": [
-        "--directory",
-        "<dir_to>/mcp-obsidian",
         "run",
-        "mcp-obsidian"
+        "obsidian-mcp"
       ]
     }
   }
@@ -107,7 +96,8 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
         "mcp-obsidian"
       ],
       "env": {
-        "OBSIDIAN_API_KEY" : "<YOUR_OBSIDIAN_API_KEY>"
+        "OBSIDIAN_API_KEY": "<your_api_key_here>",
+        "OBSIDIAN_HOST": "<your_obsidian_host>" # Optional
       }
     }
   }
@@ -115,21 +105,61 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 ```
 </details>
 
-## Development
+#### Local Installation
 
-### Building
+After cloning the repository and installing dependencies, you can run the server locally from the project directory using `uv run src/obsidian_mcp/__main__.py`. Alternatively, you can install the project in editable mode using `uv pip install -e .` from the project root, which will allow you to use `uv run obsidian-mcp`.
 
-To prepare the package for distribution:
+To get started, first clone the repository and install the dependencies:
 
-1. Sync dependencies and update lockfile:
+1. Clone the repository:
+```bash
+git clone https://github.com/jlowin/mcp-obsidian.git
+cd mcp-obsidian
+```
+
+2. Install dependencies using uv:
 ```bash
 uv sync
 ```
 
+## Configuration
+
+### Obsidian REST API Key
+
+There are two ways to configure the environment with the Obsidian REST API Key. 
+
+1. Add to server config (preferred)
+
+```json
+{
+  "mcp-obsidian": {
+    "command": "uvx",
+    "args": [
+      "mcp-obsidian"
+    ],
+    "env": {
+      "OBSIDIAN_API_KEY": "<your_api_key_here>",
+      "OBSIDIAN_HOST": "<your_obsidian_host>" # Optional, defaults to 127.0.0.1
+    }
+  }
+}
+```
+
+2. Create a `.env` file in the working directory with the following required variable:
+
+```
+OBSIDIAN_API_KEY=your_api_key_here
+OBSIDIAN_HOST=your_obsidian_host # Optional, defaults to 127.0.0.1
+```
+
+Note: You can find the key in the Obsidian plugin config.
+
+## Development
+
 ### Debugging
 
 Since MCP servers run over stdio, debugging can be challenging. For the best debugging
-experience, we strongly recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector).
+experience, we strongly recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector). You can also use `mcp dev` to launch the inspector.
 
 You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
 

@@ -1,5 +1,8 @@
-import asyncio
-import server
+from . import server
+from .server import app
+
+def main():
+    app.run()
 
 if __name__ == "__main__":
-    server.app.run()
+    main()

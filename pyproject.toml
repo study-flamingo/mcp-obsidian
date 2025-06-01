@@ -17,3 +17,6 @@ dependencies = [
 dev = [
     "mcp[cli]>=1.9.1",
 ]
+
+[project.scripts]
+obsidian-mcp = "obsidian_mcp.__main__:main"

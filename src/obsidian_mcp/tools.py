@@ -8,8 +8,8 @@ from typing import Annotated, Literal
 from pydantic import Field
 import json
 import os
-import obsidian
-from server import app
+from . import obsidian
+from .server import app
 
 api_key = os.getenv("OBSIDIAN_API_KEY", "")
 obsidian_host = os.getenv("OBSIDIAN_HOST", "127.0.0.1")
@@ -18,7 +18,7 @@ obsidian_host = os.getenv("OBSIDIAN_HOST", "127.0.0.1")
 @app.tool(
     description="Lists all files and directories in the root directory of your Obsidian vault."
 )
-async def obsidian_list_files_in_vault() -> list[str]:
+async def list_files_in_vault() -> list[str]:
     """Lists all files and directories in the root directory of your Obsidian vault."""
     api = obsidian.Obsidian(api_key=api_key, host=obsidian_host)
     files = api.list_files_in_vault()
@@ -27,7 +27,7 @@ async def obsidian_list_files_in_vault() -> list[str]:
 @app.tool(
     description="Lists all files and directories that exist in a specific Obsidian directory."
 )
-async def obsidian_list_files_in_dir(
+async def list_files_in_dir(
     dirpath: Annotated[str, Field(description="Path to list files from (relative to your vault root). Note that empty directories will not be returned.")]
 ) -> list[str]:
     """Lists all files and directories that exist in a specific Obsidian directory."""
@@ -38,7 +38,7 @@ async def obsidian_list_files_in_dir(
 @app.tool(
     description="Return the content of a single file in your vault."
 )
-async def obsidian_get_file_contents(
+async def get_file_contents(
     filepath: Annotated[str, Field(description="Path to the relevant file (relative to your vault root).", format="path")]
 ) -> str:
     """Return the content of a single file in your vault."""
@@ -50,7 +50,7 @@ async def obsidian_get_file_contents(
     description="""Simple search for documents matching a specified text query across all files in the vault.
             Use this tool when you want to do a simple text search"""
 )
-async def obsidian_simple_search(
+async def simple_search(
     query: Annotated[str, Field(description="Text to a simple search for in the vault.")],
     context_length: Annotated[int, Field(description="How much context to return around the matching string (default: 100)", default=100)] = 100
 ) -> list[dict]:
@@ -83,7 +83,7 @@ async def obsidian_simple_search(
 @app.tool(
     description="Append content to a new or existing file in the vault."
 )
-async def obsidian_append_content(
+async def append_content(
     filepath: Annotated[str, Field(description="Path to the file (relative to vault root)", format="path")],
     content: Annotated[str, Field(description="Content to append to the file")]
 ) -> str:
@@ -95,7 +95,7 @@ async def obsidian_append_content(
 @app.tool(
     description="Insert content into an existing note relative to a heading, block reference, or frontmatter field."
 )
-async def obsidian_patch_content(
+async def patch_content(
     filepath: Annotated[str, Field(description="Path to the file (relative to vault root)", format="path")],
     operation: Annotated[Literal["append", "prepend", "replace"], Field(description="Operation to perform (append, prepend, or replace)")],
     target_type: Annotated[Literal["heading", "block", "frontmatter"], Field(description="Type of target to patch")],
@@ -110,7 +110,7 @@ async def obsidian_patch_content(
 @app.tool(
     description="Delete a file or directory from the vault."
 )
-async def obsidian_delete_file(
+async def delete_file(
     filepath: Annotated[str, Field(description="Path to the file or directory to delete (relative to vault root)", format="path")],
     confirm: Annotated[bool, Field(description="Confirmation to delete the file (must be true)", default=False)] = False
 ) -> str:
@@ -129,7 +129,7 @@ async def obsidian_delete_file(
             Use this tool when you want to do a complex search, e.g. for all documents with certain tags etc.
             """
 )
-async def obsidian_complex_search(
+async def complex_search(
     query: Annotated[dict, Field(description="JsonLogic query object. Example: {\"glob\": [\"*.md\", {\"var\": \"path\"}]} matches all markdown files")]
 ) -> list[dict]:
     """Complex search for documents using a JsonLogic query."""
@@ -140,7 +140,7 @@ async def obsidian_complex_search(
 @app.tool(
     description="Return the contents of multiple files in your vault, concatenated with headers."
 )
-async def obsidian_batch_get_file_contents(
+async def batch_get_file_contents(
     filepaths: Annotated[list[str], Field(description="List of file paths to read", items={"type": "string", "description": "Path to a file (relative to your vault root)", "format": "path"})]
 ) -> str:
     """Return the contents of multiple files in your vault, concatenated with headers."""
@@ -151,7 +151,7 @@ async def obsidian_batch_get_file_contents(
 @app.tool(
     description="Get current periodic note for the specified period."
 )
-async def obsidian_get_periodic_note(
+async def get_periodic_note(
     period: Annotated[Literal["daily", "weekly", "monthly", "quarterly", "yearly"], Field(description="The period type (daily, weekly, monthly, quarterly, yearly)")]
 ) -> str:
     """Get current periodic note for the specified period."""
@@ -166,7 +166,7 @@ async def obsidian_get_periodic_note(
 @app.tool(
     description="Get most recent periodic notes for the specified period type."
 )
-async def obsidian_get_recent_periodic_notes(
+async def get_recent_periodic_notes(
     period: Annotated[Literal["daily", "weekly", "monthly", "quarterly", "yearly"], Field(description="The period type (daily, weekly, monthly, quarterly, yearly)")],
     limit: Annotated[int, Field(description="Maximum number of notes to return (default: 5)", default=5, minimum=1, maximum=50)] = 5,
     include_content: Annotated[bool, Field(description="Whether to include note content (default: false)", default=False)] = False
@@ -189,7 +189,7 @@ async def obsidian_get_recent_periodic_notes(
 @app.tool(
     description="Get recently modified files in the vault."
 )
-async def obsidian_get_recent_changes(
+async def get_recent_changes(
     limit: Annotated[int, Field(description="Maximum number of files to return (default: 10)", default=10, minimum=1, maximum=100)] = 10,
     days: Annotated[int, Field(description="Only include files modified within this many days (default: 90)", minimum=1, default=90)] = 90
 ) -> list[dict]:

@@ -19,7 +19,7 @@ if not api_key:
 app = FastMCP("obsidian_mcp")
 
 # Import tools after app definition to avoid errors
-import tools
+from . import tools
 logger.debug("Tools imported successfully")
 
 if __name__ == "__main__":
