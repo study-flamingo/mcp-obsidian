@@ -1,4 +1,4 @@
 from . import server
-from .server import app
+from .server import mcp
 
-__all__ = ['app', 'server']
+__all__ = ['mcp', 'server']

@@ -9,13 +9,13 @@ from pydantic import Field
 import json
 import os
 from . import obsidian
-from .server import app
+from .server import mcp
 
 api_key = os.getenv("OBSIDIAN_API_KEY", "")
 obsidian_host = os.getenv("OBSIDIAN_HOST", "127.0.0.1")
 
 
-@app.tool(
+@mcp.tool(
     description="Lists all files and directories in the root directory of your Obsidian vault."
 )
 async def list_files_in_vault() -> list[str]:
@@ -24,7 +24,7 @@ async def list_files_in_vault() -> list[str]:
     files = api.list_files_in_vault()
     return files
 
-@app.tool(
+@mcp.tool(
     description="Lists all files and directories that exist in a specific Obsidian directory."
 )
 async def list_files_in_dir(
@@ -35,7 +35,7 @@ async def list_files_in_dir(
     files = api.list_files_in_dir(dirpath)
     return files
 
-@app.tool(
+@mcp.tool(
     description="Return the content of a single file in your vault."
 )
 async def get_file_contents(
@@ -46,7 +46,7 @@ async def get_file_contents(
     content = api.get_file_contents(filepath)
     return content
 
-@app.tool(
+@mcp.tool(
     description="""Simple search for documents matching a specified text query across all files in the vault.
             Use this tool when you want to do a simple text search"""
 )
@@ -80,7 +80,7 @@ async def simple_search(
 
     return formatted_results
 
-@app.tool(
+@mcp.tool(
     description="Append content to a new or existing file in the vault."
 )
 async def append_content(
@@ -92,7 +92,7 @@ async def append_content(
     api.append_content(filepath, content)
     return f"Successfully appended content to {filepath}"
 
-@app.tool(
+@mcp.tool(
     description="Insert content into an existing note relative to a heading, block reference, or frontmatter field."
 )
 async def patch_content(
@@ -107,7 +107,7 @@ async def patch_content(
     api.patch_content(filepath, operation, target_type, target, content)
     return f"Successfully patched content in {filepath}"
 
-@app.tool(
+@mcp.tool(
     description="Delete a file or directory from the vault."
 )
 async def delete_file(
@@ -122,7 +122,7 @@ async def delete_file(
     api.delete_file(filepath)
     return f"Successfully deleted {filepath}"
 
-@app.tool(
+@mcp.tool(
     description="""Complex search for documents using a JsonLogic query.
             Supports standard JsonLogic operators plus 'glob' and 'regexp' for pattern matching. Results must be non-falsy.
 
@@ -137,7 +137,7 @@ async def complex_search(
     results = api.search_json(query)
     return results
 
-@app.tool(
+@mcp.tool(
     description="Return the contents of multiple files in your vault, concatenated with headers."
 )
 async def batch_get_file_contents(
@@ -148,7 +148,7 @@ async def batch_get_file_contents(
     content = api.get_batch_file_contents(filepaths)
     return content
 
-@app.tool(
+@mcp.tool(
     description="Get current periodic note for the specified period."
 )
 async def get_periodic_note(
@@ -163,7 +163,7 @@ async def get_periodic_note(
     content = api.get_periodic_note(period)
     return content
 
-@app.tool(
+@mcp.tool(
     description="Get most recent periodic notes for the specified period type."
 )
 async def get_recent_periodic_notes(
@@ -186,7 +186,7 @@ async def get_recent_periodic_notes(
     results = api.get_recent_periodic_notes(period, limit, include_content)
     return results
 
-@app.tool(
+@mcp.tool(
     description="Get recently modified files in the vault."
 )
 async def get_recent_changes(
